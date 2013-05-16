@@ -87,7 +87,7 @@ def toggle_vim_config
   dot_vim   = Paths.home + '.vim'
   dot_vim_orig = Paths.home + ".vim.ls-pair.orig"
   dot_vimrc_orig = Paths.home + ".vimrc.ls-pair.orig"
-  configs_swapped_name = Paths.home + ".vim.ls-pair.config.swapped" 
+  configs_swapped_name = Paths.home + ".vim.ls-pair.config.swapped"
 
   if File.exists?(configs_swapped_name)
     announce "Reverting vim config back to original"
