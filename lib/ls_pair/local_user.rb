@@ -1,12 +1,14 @@
 require 'ls_pair/directory_service'
 require 'ls_pair/filesystem'
 require 'ls_pair/ssh_keys'
+require 'ls_pair/os_support'
 
 module LsPair
   class LocalUser
     def initialize(username, options = {})
       @options = options
       @username = username
+      @os = OsSupport.determine_os
     end
 
     def provision
@@ -20,20 +22,23 @@ module LsPair
 
     private
 
+    # TODO memoize
     def filesystem
-      @options[:filesystem] || Filesystem.new
+      @options[:filesystem] || @os.filesystem
     end
 
+    # TODO memoize
     def directory_service
-      @options[:directory_service] || DirectoryService.new
+      @options[:directory_service] || @os.directory_service
     end
 
+    # TODO memoize
     def ssh_keys
-      @options[:ssh_keys] || SshKeys.new
+      @options[:ssh_keys] || @os.ssh_keys
     end
 
     def home_dir
-      "/Users/#{@username}"
+      @os.home_dir(@username)
     end
 
     def public_ssh_key
@@ -62,7 +67,7 @@ module LsPair
 
     def set_home_dir_permissions
       filesystem.chmod(0755, home_dir)
-      filesystem.chown_R(@username, 'staff', home_dir)
+      filesystem.chown_R(@username, @os.standard_group, home_dir)
     end
   end
 end

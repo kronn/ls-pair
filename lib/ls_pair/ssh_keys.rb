@@ -8,6 +8,7 @@ module LsPair
 
     def initialize(options = {})
       @options = options
+      @os = OsSupport.determine_os
     end
 
     def read(username)
@@ -24,8 +25,9 @@ module LsPair
 
     private
 
+    # TODO memoize
     def filesystem
-      @options[:filesystem] || Filesystem.new
+      @options[:filesystem] || @os.filesystem
     end
 
     def key_path_for(username)

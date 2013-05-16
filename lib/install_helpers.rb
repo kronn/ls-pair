@@ -1,5 +1,6 @@
 require 'fileutils'
 require 'pathname'
+require_relative 'ls_pair/os_support'
 
 Pathname.class_eval do
   def blank?
@@ -33,6 +34,8 @@ def run_cmd(cmd)
   end
 end
 
+os = LsPair::OsSupport.determine_os
+
 # There may be a lot of output; highlight the important bits
 def announce(message, divider_char = '=')
   divider = divider_char * message.length
@@ -43,7 +46,7 @@ end
 def ensure_wemux_installed
   return if `which wemux` =~ /\S+/
   announce "Installing wemux..."
-  run_cmd 'brew install wemux'
+  run_cmd os.install_wemux
 end
 
 # Symlink our tmux configuration file into the user's home directory
